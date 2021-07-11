@@ -7,6 +7,6 @@ import com.alibaba.sdk.android.oss.model.PutObjectResult;
  * Created by DB on 2017/8/2.
  */
 
-public abstract class OSSContentPutVoidHandler extends OSSVoidHandler<PutObjectRequest, PutObjectResult> {
+public abstract class OSSContentPutHandler extends OSSVoidHandler<PutObjectRequest, PutObjectResult> {
 
 }

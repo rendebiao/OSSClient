@@ -61,7 +61,7 @@ public class OSSClient extends Handler {
         return oss.asyncGetObject(new GetObjectRequest(bucketName, objectKey), contentHandler);
     }
 
-    public OSSAsyncTask asyncPutFileContent(String bucketName, String objectKey, String content, String charsetName, final OSSContentPutVoidHandler contentHandler) {
+    public OSSAsyncTask asyncPutFileContent(String bucketName, String objectKey, String content, String charsetName, final OSSContentPutHandler contentHandler) {
         if (contentHandler != null) {
             contentHandler.setResultHandler(this);
         }
@@ -74,7 +74,7 @@ public class OSSClient extends Handler {
         return null;
     }
 
-    public OSSAsyncTask asyncDeleteFile(String bucketName, String objectKey, OSSFileDeleteVoidHandler contentHandler) {
+    public OSSAsyncTask asyncDeleteFile(String bucketName, String objectKey, OSSFileDeleteHandler contentHandler) {
         if (contentHandler != null) {
             contentHandler.setResultHandler(this);
         }
@@ -106,5 +106,9 @@ public class OSSClient extends Handler {
             threadHandler = new Handler(thread.getLooper());
         }
         return threadHandler;
+    }
+
+    public OSS getOss() {
+        return oss;
     }
 }

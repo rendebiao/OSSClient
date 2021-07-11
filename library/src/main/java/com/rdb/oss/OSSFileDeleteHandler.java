@@ -7,6 +7,6 @@ import com.alibaba.sdk.android.oss.model.DeleteObjectResult;
  * Created by DB on 2017/8/2.
  */
 
-public abstract class OSSFileDeleteVoidHandler extends OSSVoidHandler<DeleteObjectRequest, DeleteObjectResult> {
+public abstract class OSSFileDeleteHandler extends OSSVoidHandler<DeleteObjectRequest, DeleteObjectResult> {
 
 }

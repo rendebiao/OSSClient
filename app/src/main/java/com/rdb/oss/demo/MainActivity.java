@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.rdb.oss.OSSClient;
 import com.rdb.oss.OSSContentGetHandler;
-import com.rdb.oss.OSSContentPutVoidHandler;
+import com.rdb.oss.OSSContentPutHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         saveFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client.asyncPutFileContent(bucketName.getText().toString(), objectKey.getText().toString(), contentView.getText().toString().trim(), "utf-8", new OSSContentPutVoidHandler() {
+                client.asyncPutFileContent(bucketName.getText().toString(), objectKey.getText().toString(), contentView.getText().toString().trim(), "utf-8", new OSSContentPutHandler() {
                     @Override
                     public void onSuccess() {
                         Log.e("oss", "putObjectContent onSuccess ");
