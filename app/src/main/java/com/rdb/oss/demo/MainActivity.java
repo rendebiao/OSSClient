@@ -1,6 +1,5 @@
 package com.rdb.oss.demo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,9 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.rdb.oss.OSSClient;
 import com.rdb.oss.OSSContentGetHandler;
-import com.rdb.oss.OSSContentPutHandler;
+import com.rdb.oss.OSSContentPutVoidHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
                 client.asyncGetFileContent(bucketName.getText().toString(), objectKey.getText().toString(), "utf-8", new OSSContentGetHandler(null, 0) {
                     @Override
                     public void onSuccess(long modifyTime, boolean valid, String content) {
-                        Log.e("oss","getObjectContent onSuccess " + content);
+                        Log.e("oss", "getObjectContent onSuccess " + content);
                         contentView.setText(content);
                     }
 
                     @Override
-                    public void onFailure(String message) {
-                        Log.e("oss","getObjectContent onFailure " + message);
+                    public void onFailure(int type, String message) {
+                        Log.e("oss", "getObjectContent onFailure " + message);
                         contentView.setText(null);
                     }
                 });
@@ -53,17 +54,17 @@ public class MainActivity extends AppCompatActivity {
         saveFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client.asyncPutFileContent(bucketName.getText().toString(), objectKey.getText().toString(), contentView.getText().toString().trim(), "utf-8", new OSSContentPutHandler() {
+                client.asyncPutFileContent(bucketName.getText().toString(), objectKey.getText().toString(), contentView.getText().toString().trim(), "utf-8", new OSSContentPutVoidHandler() {
                     @Override
                     public void onSuccess() {
-                        Log.e("oss","putObjectContent onSuccess ");
-                        Toast.makeText(MainActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
+                        Log.e("oss", "putObjectContent onSuccess ");
+                        Toast.makeText(MainActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onFailure(String message) {
-                        Log.e("oss","putObjectContent onFailure " + message);
-                        Toast.makeText(MainActivity.this,"修改失败",Toast.LENGTH_SHORT).show();
+                    public void onFailure(int type, String message) {
+                        Log.e("oss", "putObjectContent onFailure " + message);
+                        Toast.makeText(MainActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

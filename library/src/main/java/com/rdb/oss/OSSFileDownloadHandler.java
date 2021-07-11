@@ -34,7 +34,7 @@ public abstract class OSSFileDownloadHandler extends OSSFailureHandler<GetObject
             }
             return file.exists();
         }
-        handFailure("file init fail");
+        handFailure(0, "file init fail");
         return false;
     }
 
@@ -51,7 +51,7 @@ public abstract class OSSFileDownloadHandler extends OSSFailureHandler<GetObject
             while ((len = inputStream.read(buffer)) != -1) {
                 outStream.write(buffer, 0, len);
             }
-            handler.post(new Runnable() {
+            resultHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     onSuccess(file);
@@ -59,7 +59,7 @@ public abstract class OSSFileDownloadHandler extends OSSFailureHandler<GetObject
             });
         } catch (IOException e) {
             e.printStackTrace();
-            handFailure(e.getMessage());
+            handFailure(0, e.getMessage());
         } finally {
             if (outStream != null) {
                 try {

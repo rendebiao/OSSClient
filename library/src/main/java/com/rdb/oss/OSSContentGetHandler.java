@@ -78,7 +78,7 @@ public abstract class OSSContentGetHandler extends OSSFailureHandler<GetObjectRe
             } catch (final IOException e) {
                 e.printStackTrace();
                 if (request == null) {
-                    handFailure(e.getMessage());
+                    handFailure(0, e.getMessage());
                 } else {
                     handCache(response);
                     OSSLog.log("OSSContentGetHandler handCache after error");
@@ -127,7 +127,7 @@ public abstract class OSSContentGetHandler extends OSSFailureHandler<GetObjectRe
     }
 
     private void handSuccess(final long lastModify, final boolean isCache, final String content) {
-        handler.post(new Runnable() {
+        resultHandler.post(new Runnable() {
             @Override
             public void run() {
                 onSuccess(lastModify, isCache, content);

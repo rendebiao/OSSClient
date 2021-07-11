@@ -8,32 +8,32 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/bucketName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="bucketName"
             android:text="app-article" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/objectKey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="objectKey" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/ossFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="查看文件" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="修改文件" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

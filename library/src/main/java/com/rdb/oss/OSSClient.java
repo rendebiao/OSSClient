@@ -2,12 +2,11 @@ package com.rdb.oss;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 
 import com.alibaba.sdk.android.oss.ClientConfiguration;
-import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
-import com.alibaba.sdk.android.oss.ServiceException;
 import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
 import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvider;
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
@@ -23,7 +22,8 @@ import java.io.File;
 
 public class OSSClient extends Handler {
 
-    private OSS oss;
+    private final OSS oss;
+    private Handler threadHandler;
 
     public OSSClient(Context context, String endpoint, String accessKeyId, String accessKeySecret) {
         super(Looper.getMainLooper());
@@ -52,7 +52,7 @@ public class OSSClient extends Handler {
 
     public OSSAsyncTask asyncGetFileContent(String bucketName, String objectKey, String charsetName, final OSSContentGetHandler contentHandler) {
         if (contentHandler != null) {
-            contentHandler.setHandler(this);
+            contentHandler.setResultHandler(this);
             if (contentHandler.handCache(bucketName, objectKey)) {
                 return null;
             }
@@ -61,26 +61,50 @@ public class OSSClient extends Handler {
         return oss.asyncGetObject(new GetObjectRequest(bucketName, objectKey), contentHandler);
     }
 
-    public OSSAsyncTask asyncPutFileContent(String bucketName, String objectKey, String content, String charsetName, final OSSContentPutHandler contentHandler) {
+    public OSSAsyncTask asyncPutFileContent(String bucketName, String objectKey, String content, String charsetName, final OSSContentPutVoidHandler contentHandler) {
         if (contentHandler != null) {
-            contentHandler.setHandler(this);
+            contentHandler.setResultHandler(this);
         }
         try {
-            return oss.asyncPutObject(new PutObjectRequest(bucketName, objectKey, content.getBytes(charsetName)), contentHandler);
+            byte[] uploadData = content.getBytes(charsetName);
+            return oss.asyncPutObject(new PutObjectRequest(bucketName, objectKey, uploadData), contentHandler);
         } catch (final Exception e) {
-            contentHandler.handFailure(e.getMessage());
+            contentHandler.handFailure(0, e.getMessage());
         }
         return null;
     }
 
-    public OSSAsyncTask asyncDeleteFile(String bucketName, String objectKey, OSSFileDeleteHandler contentHandler) {
+    public OSSAsyncTask asyncDeleteFile(String bucketName, String objectKey, OSSFileDeleteVoidHandler contentHandler) {
         if (contentHandler != null) {
-            contentHandler.setHandler(this);
+            contentHandler.setResultHandler(this);
         }
         return oss.asyncDeleteObject(new DeleteObjectRequest(bucketName, objectKey), contentHandler);
     }
 
-    public boolean doesObjectExist(String bucketName, String objectKey) throws ClientException, ServiceException {
-        return oss.doesObjectExist(bucketName, objectKey);
+    public void asyncDoesFileExist(final String bucketName, final String objectKey, final OSSContentExistHandler contentHandler) {
+        if (contentHandler != null) {
+            contentHandler.setResultHandler(this);
+        }
+        getThreadHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    boolean exist = oss.doesObjectExist(bucketName, objectKey);
+                    contentHandler.handSuccess(exist);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    contentHandler.handFailure(e.getMessage());
+                }
+            }
+        });
+    }
+
+    private synchronized Handler getThreadHandler() {
+        if (threadHandler == null) {
+            HandlerThread thread = new HandlerThread("OSS HandlerThread");
+            thread.start();
+            threadHandler = new Handler(thread.getLooper());
+        }
+        return threadHandler;
     }
 }

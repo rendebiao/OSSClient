@@ -16,7 +16,7 @@ public abstract class OSSFileUploadHandler extends OSSFailureHandler<PutObjectRe
 
     @Override
     public final void onProgress(PutObjectRequest request, final long currentSize, final long totalSize) {
-        handler.post(new Runnable() {
+        resultHandler.post(new Runnable() {
             @Override
             public void run() {
                 onProgress(currentSize, totalSize);
@@ -26,7 +26,7 @@ public abstract class OSSFileUploadHandler extends OSSFailureHandler<PutObjectRe
 
     @Override
     public final void onSuccess(PutObjectRequest request, PutObjectResult result) {
-        handler.post(new Runnable() {
+        resultHandler.post(new Runnable() {
             @Override
             public void run() {
                 onSuccess();
